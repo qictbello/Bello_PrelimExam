@@ -1,0 +1,19 @@
+---
+
+ - hosts: all
+   become: true
+   tasks:
+
+   - name: install latest python3 and pip3
+     package:
+       name:
+         - "{{ python3_package }}"
+         - "{{ pip3_package }}"
+       state: latest
+
+   - name: install Java open-jdk
+     package:
+       name:
+         - "{{ java_package }}"
+       state: latest
+
