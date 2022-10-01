@@ -2,6 +2,8 @@
 
  - hosts: all
    become: true
+   vars:
+    - user: bughaw
    tasks:
 
    - name: install latest python3 and pip3
@@ -11,9 +13,32 @@
          - "{{ pip3_package }}"
        state: latest
 
+   - name: use pip3 as default pip and python3 as default python
+     ansible.builtin.shell: |
+      echo "alias python=/usr/local/bin/python3" >> ~/.bashrc
+      echo "alias pip=/usr/local/bin/pip3" >> ~/.bashrc
+
    - name: install Java open-jdk
      package:
        name:
          - "{{ java_package }}"
        state: latest
 
+   - name: MOTD deployer defined var
+     copy:
+        content: "Ansible Managed node by {{user}}\n"
+        dest: /etc/motd
+
+   - name: MOTD deployer default
+     copy:
+        content: "Ansible Managed node by Bello\n"
+        dest: /etc/motd
+
+   - name: Create User in both server
+     ansible.builtin.user:
+        name: "{{user}}"
+        comment: Nickname
+        uid: 1069
+        group: root
+        createhome: yes
+        home: /home/"{{user}}"
